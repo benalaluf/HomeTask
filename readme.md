@@ -12,11 +12,12 @@ Before you start, make sure you have the following:
 
 ## Setup
 
-1. Connect your Android device via `adb` and ensure Telegram is logged in.
+1. Setup your Android device via `adb` and ensure Telegram is logged in.
 2. Push the test images to the connected device using the following script:
     ```bash
     ./push_images.sh
     ```
+3. RUN
 
 ## Running the Project
 
