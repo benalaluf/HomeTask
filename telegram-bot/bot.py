@@ -5,7 +5,6 @@ from telegram import Update
 from telegram.ext import ApplicationBuilder, ContextTypes, MessageHandler, filters
 
 
-
 load_dotenv()
 TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 
@@ -31,7 +30,6 @@ def is_jpeg(file_path):
             else:
                 return False
 
-
     except Exception as e:
         print(f"An error occurred: {e}")
         return False
@@ -55,13 +53,44 @@ async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await update.message.reply_text(f"SHA256 Hash: {sha256_hash.hexdigest()}")
             print(f"SHA256 Hash: {sha256_hash.hexdigest()}")
         else:
-            await update.message.reply_text("Error Only JPG/JPEG images are supported")
-            print("Error Only JPG/JPEG images are supported")
-
+            await update.message.reply_text("Error: Only JPG/JPEG images are supported")
+            print("Error: Only JPG/JPEG images are supported")
 
     except Exception as e:
         print(f"error in handle_photo: {e}")
         await update.message.reply_text("An error occurred while processing the photo")
+
+async def handle_document(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    temp_file = 'temp.img'
+    try:
+        document = update.message.document
+
+        # Check if the document is a jpg/jpeg based on mime type
+        if document.mime_type not in ['image/jpeg', 'image/jpg']:
+            await update.message.reply_text("Error: Only JPG/JPEG documents are supported")
+            print("Error: Only JPG/JPEG documents are supported")
+            return
+
+        file = await document.get_file()
+        await file.download_to_drive(temp_file)
+
+        if is_jpeg(temp_file):
+            sha256_hash = hashlib.sha256()
+            with open(temp_file, "rb") as f:
+                for byte_block in iter(lambda: f.read(4096), b""):
+                    sha256_hash.update(byte_block)
+            os.remove(temp_file)
+
+            await update.message.reply_text(f"SHA256 Hash: {sha256_hash.hexdigest()}")
+            print(f"SHA256 Hash: {sha256_hash.hexdigest()}")
+        else:
+            await update.message.reply_text("Error: Only JPG/JPEG images are supported")
+            print("Error: Only JPG/JPEG images are supported")
+
+    except Exception as e:
+        print(f"error in handle_document: {e}")
+        await update.message.reply_text("An error occurred while processing the document")
+
 
 async def handle_other(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("Error: Only JPG/JPEG images are supported.")
@@ -71,9 +100,11 @@ def main():
     app = ApplicationBuilder().token(TOKEN).build()
 
     photo_handler = MessageHandler(filters.PHOTO, handle_photo)
-    text_handler = MessageHandler(filters.ALL & ~filters.PHOTO, handle_other)
+    doc_handler = MessageHandler(filters.Document.ALL, handle_document)
+    text_handler = MessageHandler(filters.ALL & ~filters.PHOTO & ~filters.Document.ALL, handle_other)
 
     app.add_handler(photo_handler)
+    app.add_handler(doc_handler)
     app.add_handler(text_handler)
 
     print("Boti is running... :)")
