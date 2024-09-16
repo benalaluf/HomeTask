@@ -25,14 +25,13 @@ class TestTelegramBot(unittest.TestCase):
         options.autoGrantPermissions = True
 
         self.driver = webdriver.Remote('http://localhost:4723', options=options)
-        self.driver.implicitly_wait(12)
-        print(f'Setup complete for {self._testMethodName}')
+        self.driver.implicitly_wait(10)
 
     def tearDown(self):
         self.driver.quit()
-        print(f'Teardown complete for {self._testMethodName}')
 
     def run(self, result=None):
+        super().run(result)
         if result.wasSuccessful():
             print(f'Test {self._testMethodName} PASSED')
         else:
