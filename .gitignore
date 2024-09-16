@@ -1,0 +1,4 @@
+.idea
+.venv
+telegram-bot/temp.img
+docker/.env
