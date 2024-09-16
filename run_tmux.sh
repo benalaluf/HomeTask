@@ -37,8 +37,9 @@ echo "Connected device: $device_name"
 
 echo "ADB_DEVICE_NAME=$device_name" > .env
 
-docker-compose build
-docker-compose up -d
+docker-compose -f docker/docker-compose.yml down
+docker-compose -f docker/docker-compose.yml build
+docker-compose -f docker/docker-compose.yml up -d
 
 tmux new-session -d -s docker_tmux
 

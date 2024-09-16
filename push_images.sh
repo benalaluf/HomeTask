@@ -1,2 +1,2 @@
-adb push test-bot/ducks/* sdcard/Download
+adb push assets/ducks/* sdcard/Download
 adb reboot

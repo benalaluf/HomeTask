@@ -25,14 +25,26 @@ class TestTelegramBot(unittest.TestCase):
         options.autoGrantPermissions = True
 
         self.driver = webdriver.Remote('http://localhost:4723', options=options)
-        self.driver.implicitly_wait(8)
+        self.driver.implicitly_wait(12)
 
     def tearDown(self):
         self.driver.quit()
 
-    def find_chat(self, name, telegramat):
+    def open_telegram_reliable(self):
+        self.driver.press_keycode(3)
+        sleep(0.8)
+        size = self.driver.get_window_size()
+        start_x = size['width'] / 2
+        start_y = size['height'] * 0.9
+        end_y = size['height'] * 0.1
+        self.driver.swipe(start_x, start_y, start_x, end_y, 800)
+        sleep(0.8)
         element = self.driver.find_element(AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("Telegram")')
         element.click()
+
+    def find_chat(self, name, telegramat):
+
+        self.open_telegram_reliable()
 
         search_button = self.driver.find_element(AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().description("Search")')
         search_button.click()
@@ -50,6 +62,7 @@ class TestTelegramBot(unittest.TestCase):
                 start_button.click()
         except Exception:
             pass
+
 
     def send_message(self, message):
         input_field = self.driver.find_element(AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("Message")')
@@ -82,6 +95,7 @@ class TestTelegramBot(unittest.TestCase):
 
     def test_01_send_text_instead_of_image(self):
         self.find_chat(BOT_NAME, TELEGRAM_AT)
+
         self.send_message("DUCK")
         last_message = self.get_last_message()
         self.assertIn("error", last_message.lower())

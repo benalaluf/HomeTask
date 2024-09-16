@@ -61,4 +61,4 @@ Both `run.sh` and `tmux_run.sh` scripts are smart enough to automatically detect
 - I run my test with Pixel_8_API_35, although the code should work with every device
 
 ## BTW works on my mechine
-![](works_on_my_mechine.gif)
+![](assets/works_on_my_mechine.gif)
