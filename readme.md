@@ -58,7 +58,7 @@ Both `run.sh` and `tmux_run.sh` scripts are smart enough to automatically detect
 
 - The project is designed to be user-friendly and straightforward, with a lot of work spent learning Docker to streamline the process. 🐳
 - If you run into issues, manually running the Docker container is recommended. It may give you more control over debugging any environment problems that pop up.
-- I run my test with Pixel_8_API_35, although the code should work with every device
+- I ran my tests with Pixel_8_API_35 and Pixel_4_API_30, although the code should work with every device
 
-## BTW works on my mechine
-![](assets/works_on_my_mechine.gif)
+## BTW works on my machine
+![](assets/works_on_my_machine.gif)
