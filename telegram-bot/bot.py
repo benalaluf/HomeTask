@@ -3,6 +3,8 @@ import hashlib
 from dotenv import load_dotenv
 from telegram import Update
 from telegram.ext import ApplicationBuilder, ContextTypes, MessageHandler, filters
+from telegram.ext import CommandHandler
+
 
 
 load_dotenv()
@@ -10,6 +12,12 @@ TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 
 if not TOKEN:
     exit(1)
+
+
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    # Do nothing or print a message
+    print("/start command received, doing nothing.")
+    pass
 
 def is_jpeg(file_path):
     JPEG_MAGIC_BYTES = b'\xFF\xD8\xFF'
@@ -99,15 +107,19 @@ async def handle_other(update: Update, context: ContextTypes.DEFAULT_TYPE):
 def main():
     app = ApplicationBuilder().token(TOKEN).build()
 
+    # Command handler for /start, which does nothing
+    start_handler = CommandHandler("start", start)
+
     photo_handler = MessageHandler(filters.PHOTO, handle_photo)
     doc_handler = MessageHandler(filters.Document.ALL, handle_document)
-    text_handler = MessageHandler(filters.ALL & ~filters.PHOTO & ~filters.Document.ALL, handle_other)
+    text_handler = MessageHandler(filters.ALL & ~filters.PHOTO & ~filters.Document.ALL &~filters.COMMAND, handle_other)
 
+    app.add_handler(start_handler)  # Add the start command handler
     app.add_handler(photo_handler)
     app.add_handler(doc_handler)
     app.add_handler(text_handler)
 
-    print("Boti is running... :)")
+    print("Analysing ducks... :)")
     app.run_polling()
 
 if __name__ == "__main__":
