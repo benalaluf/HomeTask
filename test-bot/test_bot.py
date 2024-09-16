@@ -1,4 +1,6 @@
 import unittest
+from time import sleep
+
 from appium import webdriver
 from appium.options.android import UiAutomator2Options
 from appium.webdriver.common.appiumby import AppiumBy
@@ -66,8 +68,12 @@ class TestTelegramBot(unittest.TestCase):
 
     def get_last_message(self):
         message_elements = self.driver.find_element(AppiumBy.XPATH, "//androidx.recyclerview.widget.RecyclerView")
-        childs = message_elements.find_elements(AppiumBy.CLASS_NAME, "android.view.ViewGroup")
-        return childs[-1].text if message_elements else None
+
+        while True:
+            childs = message_elements.find_elements(AppiumBy.CLASS_NAME, "android.view.ViewGroup")
+            if "Seen" not in childs[-1].text:
+                return childs[-1].text
+            sleep(0.5)
 
     def test_01_send_text_instead_of_image(self):
         self.find_chat("DuckImageAnalyser", "duckimageanalyserbot")

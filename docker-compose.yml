@@ -4,13 +4,13 @@ services:
   telegram_bot:
     build:
       context: telegram-bot
-      dockerfile: Dockerfile
+      dockerfile: ../Dockerfile.bot
     container_name: telegram-bot
 
   appium_server:
     build:
       context: test-bot
-      dockerfile: Dockerfile.appium
+      dockerfile: ../Dockerfile.appium
     container_name: appium-server
     network_mode: "host"  # Allows Appium to access ADB on the host
     environment:
@@ -26,7 +26,7 @@ services:
   bot_test:
     build:
       context: test-bot
-      dockerfile: Dockerfile.test
+      dockerfile: ../Dockerfile.test
     container_name: bot-test
     network_mode: "host"
     depends_on:
