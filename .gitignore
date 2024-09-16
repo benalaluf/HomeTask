@@ -1,3 +1,4 @@
 .idea
 .venv
 telegram-bot/temp.img
+.env
