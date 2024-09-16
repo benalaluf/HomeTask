@@ -7,23 +7,18 @@ from appium.webdriver.common.appiumby import AppiumBy
 class TestTelegramBot(unittest.TestCase):
 
     def setUp(self):
-        # Setup UiAutomator2 options for Appium on Android 11
         options = UiAutomator2Options()
         options.platformName = 'Android'
-        options.platformVersion = '11'  # Targeting Android 11
         options.deviceName = 'emulator-5554'
         options.appPackage = 'org.telegram.messenger'
         options.appActivity = 'org.telegram.ui.LaunchActivity'
-        options.noReset = True  # Keep the app logged in after each test
+        options.noReset = True
         options.autoGrantPermissions = True
 
-        # Initialize Appium driver with the options
         self.driver = webdriver.Remote('http://localhost:4723', options=options)
-        self.driver.implicitly_wait(2)  # Implicit wait for elements
-
+        self.driver.implicitly_wait(2)
 
     def tearDown(self):
-        # Quit the driver after the test is done
         self.driver.quit()
 
     def find_chat(self, name, telegramat):
@@ -33,10 +28,8 @@ class TestTelegramBot(unittest.TestCase):
         search_button = self.driver.find_element(AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().description("Search")')
         search_button.click()
 
-
         search_button = self.driver.find_element(AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("Search")')
         search_button.send_keys(telegramat)
-
 
         chat_result = self.driver.find_element(AppiumBy.ANDROID_UIAUTOMATOR, f'new UiSelector().className("android.view.ViewGroup").textContains("{name}")')
         chat_result.click()
@@ -46,7 +39,6 @@ class TestTelegramBot(unittest.TestCase):
             if start_button.is_displayed():
                 start_button.click()
         except Exception:
-            # Continue if the button is not found
             pass
 
 
@@ -57,11 +49,8 @@ class TestTelegramBot(unittest.TestCase):
         send_button.click()
 
     def send_image(self, image_name):
-        # Open the attachment menu and send an image
-
         attach_button = self.driver.find_element(AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().description("Attach media")')
         attach_button.click()
-
 
         element = self.driver.find_element(AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("File")')
         element.click()
@@ -72,8 +61,6 @@ class TestTelegramBot(unittest.TestCase):
         element = self.driver.find_element(AppiumBy.ANDROID_UIAUTOMATOR, f'new UiSelector().text("{image_name}")')
         element.click()
 
-
-
     def get_last_message(self):
         message_elements = self.driver.find_element(AppiumBy.XPATH, "//androidx.recyclerview.widget.RecyclerView")
         childs = message_elements.find_elements(AppiumBy.CLASS_NAME, "android.view.ViewGroup")
@@ -82,28 +69,21 @@ class TestTelegramBot(unittest.TestCase):
     def test_01_send_text_instead_of_image(self):
         self.find_chat("DuckImageAnalyser", "duckimageanalyserbot")
         self.send_message("This is a test text")
-
         last_message = self.get_last_message()
         self.assertIn("error", last_message.lower())
 
     def test_02_send_png(self):
-        # self.find_chat("boti")
         self.send_image("duck.png")
-
         last_message = self.get_last_message()
         self.assertIn("error", last_message.lower())
 
     def test_03_send_fugazi_jpg(self):
-        # self.find_chat("boti", "botitheimagebot")
         self.send_image("fugaziduck.jpg")
-
         last_message = self.get_last_message()
         self.assertIn("error", last_message.lower())
 
     def test_04_send_jpg(self):
-        # self.find_chat("boti")
         self.send_image("duck.jpg")
-
         last_message = self.get_last_message()
         self.assertIn("hash", last_message.lower())
 

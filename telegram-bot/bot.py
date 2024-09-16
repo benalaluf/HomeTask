@@ -73,7 +73,6 @@ async def handle_document(update: Update, context: ContextTypes.DEFAULT_TYPE):
     try:
         document = update.message.document
 
-        # Check if the document is a jpg/jpeg based on mime type
         if document.mime_type not in ['image/jpeg', 'image/jpg']:
             await update.message.reply_text("Error: Only JPG/JPEG documents are supported")
             print("Error: Only JPG/JPEG documents are supported")
