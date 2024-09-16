@@ -1,15 +1,19 @@
 import unittest
 from appium import webdriver
 from appium.options.android import UiAutomator2Options
-from time import sleep
 from appium.webdriver.common.appiumby import AppiumBy
+import sys
 
 class TestTelegramBot(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        cls.device_name = sys.argv[1] if len(sys.argv) > 1 else 'emulator-5554'
 
     def setUp(self):
         options = UiAutomator2Options()
         options.platformName = 'Android'
-        options.deviceName = 'emulator-5554'
+        options.deviceName = self.device_name  # Use the provided device name
         options.appPackage = 'org.telegram.messenger'
         options.appActivity = 'org.telegram.ui.LaunchActivity'
         options.noReset = True
@@ -35,15 +39,14 @@ class TestTelegramBot(unittest.TestCase):
         chat_result.click()
 
         try:
-            start_button = self.driver.find_element(AppiumBy.ANDROID_UIAUTOMATOR,   'new UiSelector().text("START")')
+            start_button = self.driver.find_element(AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("START")')
             if start_button.is_displayed():
                 start_button.click()
         except Exception:
             pass
 
-
     def send_message(self, message):
-        input_field = self.driver.find_element(AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().text("Message")')
+        input_field = self.driver.find_element(AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("Message")')
         input_field.send_keys(message)
         send_button = self.driver.find_element(AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().description("Send")')
         send_button.click()
@@ -86,9 +89,6 @@ class TestTelegramBot(unittest.TestCase):
         self.send_image("duck.jpg")
         last_message = self.get_last_message()
         self.assertIn("hash", last_message.lower())
-
-
-
 
 if __name__ == '__main__':
     unittest.main()
