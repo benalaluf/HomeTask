@@ -57,10 +57,9 @@ Both `run.sh` and `tmux_run.sh` scripts are smart enough to automatically detect
 - Ensure that your Android Virtual Device (AVD) or physical device is properly connected and recognized by `adb`.
 - The project is designed to be user-friendly and straightforward, with a lot of work spent learning Docker to streamline the process for you. 🐳
 
-## Troubleshooting
+
 
 If you run into issues, manually running the Docker container is recommended. It may give you more control over debugging any environment problems that pop up.
 
-Enjoy testing in style! 🎉
 ## BTW works on my mechine
 ![](works_on_my_mechine.gif)
