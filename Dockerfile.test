@@ -9,7 +9,7 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Set environment variable
-ENV DEVICE_NAME="emulator-5554"
+ENV ADB_DEVICE_NAME="emulator-5554"
 
 # Copy the test script into the container
 COPY test_bot.py .

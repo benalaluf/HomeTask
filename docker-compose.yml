@@ -29,6 +29,8 @@ services:
       dockerfile: ../Dockerfile.test
     container_name: bot-test
     network_mode: "host"
+    environment:
+      - ADB_DEVICE_NAME=${ADB_DEVICE_NAME}
     depends_on:
       appium_server:
         condition: service_healthy

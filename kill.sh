@@ -1,2 +1,2 @@
 sudo docker-compose stop
-sudo docker-compose rm
+sudo docker-compose rm -f

@@ -103,14 +103,13 @@ async def handle_other(update: Update, context: ContextTypes.DEFAULT_TYPE):
 def main():
     app = ApplicationBuilder().token(TOKEN).build()
 
-    # Command handler for /start, which does nothing
     start_handler = CommandHandler("start", start)
 
     photo_handler = MessageHandler(filters.PHOTO, handle_photo)
     doc_handler = MessageHandler(filters.Document.ALL, handle_document)
     text_handler = MessageHandler(filters.ALL & ~filters.PHOTO & ~filters.Document.ALL &~filters.COMMAND, handle_other)
 
-    app.add_handler(start_handler)  # Add the start command handler
+    app.add_handler(start_handler)
     app.add_handler(photo_handler)
     app.add_handler(doc_handler)
     app.add_handler(text_handler)

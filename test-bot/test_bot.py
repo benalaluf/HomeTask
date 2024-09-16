@@ -22,7 +22,7 @@ class TestTelegramBot(unittest.TestCase):
         options.autoGrantPermissions = True
 
         self.driver = webdriver.Remote('http://localhost:4723', options=options)
-        self.driver.implicitly_wait(2)
+        self.driver.implicitly_wait(8)
 
     def tearDown(self):
         self.driver.quit()
@@ -68,7 +68,7 @@ class TestTelegramBot(unittest.TestCase):
 
     def get_last_message(self):
         message_elements = self.driver.find_element(AppiumBy.XPATH, "//androidx.recyclerview.widget.RecyclerView")
-
+        #fix weird bug when dockrizded
         while True:
             childs = message_elements.find_elements(AppiumBy.CLASS_NAME, "android.view.ViewGroup")
             if "Seen" not in childs[-1].text:
