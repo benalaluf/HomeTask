@@ -1,10 +1,10 @@
-import os
 import hashlib
+import os
+
 from dotenv import load_dotenv
 from telegram import Update
 from telegram.ext import ApplicationBuilder, ContextTypes, MessageHandler, filters
 from telegram.ext import CommandHandler
-
 
 load_dotenv()
 TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
@@ -38,7 +38,6 @@ def is_jpeg(file_path):
     except Exception as e:
         print(f"An error occurred: {e}")
         return False
-
 
 async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
     temp_file = 'temp.img'
@@ -107,7 +106,7 @@ def main():
 
     photo_handler = MessageHandler(filters.PHOTO, handle_photo)
     doc_handler = MessageHandler(filters.Document.ALL, handle_document)
-    text_handler = MessageHandler(filters.ALL & ~filters.PHOTO & ~filters.Document.ALL &~filters.COMMAND, handle_other)
+    text_handler = MessageHandler(filters.ALL & ~filters.PHOTO & ~filters.Document.ALL & ~filters.COMMAND, handle_other)
 
     app.add_handler(start_handler)
     app.add_handler(photo_handler)

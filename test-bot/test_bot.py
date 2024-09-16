@@ -1,10 +1,13 @@
+import sys
 import unittest
 from time import sleep
 
 from appium import webdriver
 from appium.options.android import UiAutomator2Options
 from appium.webdriver.common.appiumby import AppiumBy
-import sys
+
+BOT_NAME='DuckImageAnalyser'
+TELEGRAM_AT='duckimageanalyserbot'
 
 class TestTelegramBot(unittest.TestCase):
 
@@ -37,7 +40,8 @@ class TestTelegramBot(unittest.TestCase):
         search_button = self.driver.find_element(AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("Search")')
         search_button.send_keys(telegramat)
 
-        chat_result = self.driver.find_element(AppiumBy.ANDROID_UIAUTOMATOR, f'new UiSelector().className("android.view.ViewGroup").textContains("{name}")')
+        chat_result = self.driver.find_element(AppiumBy.ANDROID_UIAUTOMATOR,
+                                               f'new UiSelector().className("android.view.ViewGroup").textContains("{name}")')
         chat_result.click()
 
         try:
@@ -54,7 +58,8 @@ class TestTelegramBot(unittest.TestCase):
         send_button.click()
 
     def send_image(self, image_name):
-        attach_button = self.driver.find_element(AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().description("Attach media")')
+        attach_button = self.driver.find_element(AppiumBy.ANDROID_UIAUTOMATOR,
+                                                 'new UiSelector().description("Attach media")')
         attach_button.click()
 
         element = self.driver.find_element(AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("File")')
@@ -68,7 +73,7 @@ class TestTelegramBot(unittest.TestCase):
 
     def get_last_message(self):
         message_elements = self.driver.find_element(AppiumBy.XPATH, "//androidx.recyclerview.widget.RecyclerView")
-        #fix weird bug when dockrizded
+        # fix weird bug when dockrizded
         while True:
             childs = message_elements.find_elements(AppiumBy.CLASS_NAME, "android.view.ViewGroup")
             if "Seen" not in childs[-1].text:
@@ -76,8 +81,8 @@ class TestTelegramBot(unittest.TestCase):
             sleep(0.5)
 
     def test_01_send_text_instead_of_image(self):
-        self.find_chat("DuckImageAnalyser", "duckimageanalyserbot")
-        self.send_message("This is a test text")
+        self.find_chat(BOT_NAME, TELEGRAM_AT)
+        self.send_message("DUCK")
         last_message = self.get_last_message()
         self.assertIn("error", last_message.lower())
 
@@ -95,6 +100,7 @@ class TestTelegramBot(unittest.TestCase):
         self.send_image("duck.jpg")
         last_message = self.get_last_message()
         self.assertIn("hash", last_message.lower())
+
 
 if __name__ == '__main__':
     unittest.main()
