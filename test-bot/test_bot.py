@@ -19,42 +19,41 @@ class TestTelegramBot(unittest.TestCase):
 
         # Initialize Appium driver with the options
         self.driver = webdriver.Remote('http://localhost:4723', options=options)
-        self.driver.implicitly_wait(10)  # Implicit wait for elements
+        self.driver.implicitly_wait(2)  # Implicit wait for elements
 
 
     def tearDown(self):
         # Quit the driver after the test is done
         self.driver.quit()
 
-    def find_chat(self, chat_name):
+    def find_chat(self, name, telegramat):
         element = self.driver.find_element(AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("Telegram")')
         element.click()
 
-        search_button = self.driver.find_element(AppiumBy.XPATH, '//android.widget.ImageButton[@content-desc="Search"]/android.widget.ImageView')
+        search_button = self.driver.find_element(AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().description("Search")')
         search_button.click()
 
-        search_input = self.driver.find_element(AppiumBy.XPATH, '//android.widget.EditText[@text="Search"]')
-        search_input.send_keys(chat_name)
-        sleep(1)
 
-        # Select the bot from search results
-        chat_result = self.driver.find_element(AppiumBy.XPATH, f'//android.view.ViewGroup[@text="{chat_name}, bot"]')
+        search_button = self.driver.find_element(AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("Search")')
+        search_button.send_keys(telegramat)
+
+
+        chat_result = self.driver.find_element(AppiumBy.ANDROID_UIAUTOMATOR, f'new UiSelector().className("android.view.ViewGroup").textContains("{name}")')
         chat_result.click()
 
+        try:
+            start_button = self.driver.find_element(AppiumBy.ANDROID_UIAUTOMATOR,   'new UiSelector().text("START")')
+            if start_button.is_displayed():
+                start_button.click()
+        except Exception:
+            # Continue if the button is not found
+            pass
 
 
     def send_message(self, message):
-        # Send a text message to the bot
-
-        sleep(1)
-        input_field = self.driver.find_element(AppiumBy.XPATH,'//android.widget.FrameLayout[@content-desc="Web tabs "]')
-        input_field.click()
-        sleep(1)
-        input_field = self.driver.find_element(AppiumBy.XPATH, '//android.widget.EditText[@text="Message"]')
+        input_field = self.driver.find_element(AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().text("Message")')
         input_field.send_keys(message)
-        sleep(2)
-
-        send_button = self.driver.find_element(AppiumBy.XPATH, '//android.view.View[@content-desc="Send"]')
+        send_button = self.driver.find_element(AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().description("Send")')
         send_button.click()
 
     def send_image(self, image_name):
@@ -76,15 +75,13 @@ class TestTelegramBot(unittest.TestCase):
 
 
     def get_last_message(self):
-        # Get the last message in the chat
         message_elements = self.driver.find_element(AppiumBy.XPATH, "//androidx.recyclerview.widget.RecyclerView")
         childs = message_elements.find_elements(AppiumBy.CLASS_NAME, "android.view.ViewGroup")
         return childs[-1].text if message_elements else None
 
     def test_01_send_text_instead_of_image(self):
-        self.find_chat("boti")
+        self.find_chat("DuckImageAnalyser", "duckimageanalyserbot")
         self.send_message("This is a test text")
-        sleep(2)
 
         last_message = self.get_last_message()
         self.assertIn("error", last_message.lower())
@@ -92,15 +89,20 @@ class TestTelegramBot(unittest.TestCase):
     def test_02_send_png(self):
         # self.find_chat("boti")
         self.send_image("duck.png")
-        sleep(2)
 
         last_message = self.get_last_message()
         self.assertIn("error", last_message.lower())
 
-    def test_03_send_jpg(self):
+    def test_03_send_fugazi_jpg(self):
+        # self.find_chat("boti", "botitheimagebot")
+        self.send_image("fugaziduck.jpg")
+
+        last_message = self.get_last_message()
+        self.assertIn("error", last_message.lower())
+
+    def test_04_send_jpg(self):
         # self.find_chat("boti")
         self.send_image("duck.jpg")
-        sleep(2)
 
         last_message = self.get_last_message()
         self.assertIn("hash", last_message.lower())
