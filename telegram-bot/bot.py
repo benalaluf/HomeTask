@@ -6,16 +6,13 @@ from telegram.ext import ApplicationBuilder, ContextTypes, MessageHandler, filte
 from telegram.ext import CommandHandler
 
 
-
 load_dotenv()
 TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 
 if not TOKEN:
     exit(1)
 
-
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    # Do nothing or print a message
     print("/start command received, doing nothing.")
     pass
 
